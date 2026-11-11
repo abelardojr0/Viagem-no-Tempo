@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#efe4d2">
+  <meta name="description" content="Plaquinha digital e placar para partidas presenciais de Viagem no Tempo.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Viagem no Tempo">
+  <title>Viagem no Tempo — Companheiro de partida</title>
+  <link rel="stylesheet" href="style.css">
+  <!--
+    Salve index.html, style.css e script.js na mesma pasta.
+    Abra index.html no navegador. A aplicação funciona offline.
+  -->
+</head>
+<body>
+  <main id="app">
+    <section id="view-home" class="view sheet" aria-labelledby="home-title">
+      <div class="hero">
+        <div class="emblem" aria-hidden="true">
+          <span class="emblem-ring"></span>
+          <span class="emblem-diamond"></span>
+        </div>
+        <h1 id="home-title">Viagem no Tempo</h1>
+        <p class="subtitle">Seu companheiro digital de partida</p>
+        <div class="rule" aria-hidden="true"><span></span></div>
+        <p class="lede hero-lede">As cartas continuam na mesa. Aqui ficam a plaquinha de cada jogador e o placar da partida.</p>
+      </div>
+
+      <div class="home-actions">
+        <button type="button" class="home-action" data-go="board">
+          <span class="home-action-title">Minha plaquinha</span>
+          <span class="home-action-desc" id="home-board-note">Ordene os 6 acontecimentos da carta.</span>
+        </button>
+        <button type="button" class="home-action" data-go="score">
+          <span class="home-action-title">Placar da partida</span>
+          <span class="home-action-desc" id="home-match-note">Cadastre os jogadores e anote os pontos.</span>
+        </button>
+      </div>
+
+      <p class="footnote">Funciona offline. Cada aparelho guarda apenas os próprios dados.</p>
+      <p class="save-status" data-save-status></p>
+      <noscript>
+        <p class="noscript">Ative o JavaScript do navegador para usar a plaquinha e o placar.</p>
+      </noscript>
+    </section>
+
+    <section id="view-board" class="view sheet" hidden aria-labelledby="board-title">
+      <header class="topbar">
+        <button type="button" class="btn btn-ghost" data-go="home">Início</button>
+      </header>
+      <p class="eyebrow">Plaquinha individual</p>
+      <h1 id="board-title">Minha linha do tempo</h1>
+      <p class="lede">O número da esquerda é o da carta. O da direita é a ordem: 1 é o mais antigo e 6 é o mais recente.</p>
+      <p id="board-progress" class="progress-label" aria-live="polite">0 de 6 preenchidas</p>
+      <div class="progress-track" aria-hidden="true">
+        <div id="board-progress-bar" class="progress-bar"></div>
+      </div>
+      <p id="board-complete" class="complete-banner" hidden>Resposta completa. Ela fica guardada até você limpar a plaquinha.</p>
+      <div class="board-legend-row" aria-hidden="true">
+        <span>Carta</span>
+        <span>Ordem</span>
+      </div>
+      <div id="board-rows" class="board-rows" role="group" aria-label="Acontecimentos da carta"></div>
+      <div class="action-stack">
+        <button type="button" class="btn btn-secondary" id="btn-clear-board">Limpar respostas</button>
+        <button type="button" class="btn btn-primary" id="btn-new-round">Nova rodada</button>
+        <button type="button" class="btn btn-ghost" data-go="score">Abrir placar</button>
+      </div>
+      <p class="save-status" data-save-status></p>
+    </section>
+
+    <section id="view-score" class="view sheet sheet-wide" hidden aria-labelledby="score-title">
+      <header class="topbar">
+        <button type="button" class="btn btn-ghost" data-go="home">Início</button>
+      </header>
+      <p class="eyebrow">Painel da mesa</p>
+      <h1 id="score-title">Placar da partida</h1>
+      <p class="lede" id="score-lede">Cadastre quem vai jogar. A quantidade pode ser qualquer uma, a partir de duas pessoas.</p>
+      <p class="save-status" data-save-status></p>
+
+      <div id="score-setup">
+        <form id="add-player-form" class="stack" autocomplete="off" novalidate>
+          <label class="field-label" for="player-name">Nome do jogador</label>
+          <div class="form-row">
+            <input id="player-name" class="text-input" type="text" maxlength="32" placeholder="Ex.: Ana" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-describedby="player-name-error">
+            <button type="submit" class="btn btn-primary" id="btn-add-player">+ Adicionar jogador</button>
+          </div>
+          <p id="player-name-error" class="field-error" aria-live="polite"></p>
+        </form>
+
+        <div class="section-head">
+          <h2 class="section-label">Jogadores</h2>
+          <p id="player-count" class="count-label">Nenhum jogador ainda</p>
+        </div>
+        <p id="player-empty" class="empty-state">Nenhum jogador ainda. Adicione quem vai participar.</p>
+        <ul id="player-list" class="player-list" aria-label="Jogadores cadastrados" hidden></ul>
+        <p id="start-hint" class="hint">Adicione pelo menos 2 jogadores para iniciar.</p>
+        <div class="action-stack">
+          <button type="button" class="btn btn-primary" id="btn-start">Iniciar partida</button>
+          <button type="button" class="btn btn-danger-ghost" id="btn-clear-players" hidden>Limpar lista</button>
+        </div>
+      </div>
+
+      <div id="score-play" hidden>
+        <p id="play-status" class="status-line"></p>
+        <div id="result-banner" class="result-banner" hidden></div>
+        <p class="hint">Toque em uma célula para lançar de 0 a 6. A célula tracejada ainda não foi pontuada. O zero entra na soma; a célula vazia, não.</p>
+        <p id="scroll-hint" class="hint" hidden>Deslize para o lado para ver todas as rodadas. Os nomes permanecem visíveis.</p>
+        <div id="table-scroll" class="table-scroll" tabindex="0" aria-label="Tabela de pontuação"></div>
+        <p id="ranking-live" class="visually-hidden" aria-live="polite"></p>
+        <div id="ranking-region" aria-live="off"></div>
+        <div class="action-stack">
+          <button type="button" class="btn btn-secondary" id="btn-add-player-play">+ Adicionar jogador</button>
+          <button type="button" class="btn btn-secondary" id="btn-add-round">+ Adicionar rodada</button>
+          <button type="button" class="btn btn-primary" id="btn-finish">Finalizar partida</button>
+          <button type="button" class="btn btn-primary" id="btn-reopen" hidden>Reabrir partida</button>
+          <button type="button" class="btn btn-danger-ghost" id="btn-new-match">Nova partida</button>
+        </div>
+      </div>
+
+      <div class="backup-bar">
+        <h2 class="section-label">Backup neste aparelho</h2>
+        <p class="hint">Nada é enviado à internet. O arquivo JSON serve para guardar ou transferir a partida manualmente.</p>
+        <div class="action-stack">
+          <button type="button" class="btn btn-secondary" id="btn-export">Exportar backup</button>
+          <button type="button" class="btn btn-secondary" id="btn-import">Importar backup</button>
+          <button type="button" class="btn btn-ghost" data-go="board">Ir para a plaquinha</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <div id="modal" class="modal" hidden>
+    <div class="modal-backdrop" data-modal-dismiss></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <h2 id="modal-title"></h2>
+      <p id="modal-message"></p>
+      <div id="modal-custom"></div>
+      <div id="modal-actions" class="modal-actions"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
